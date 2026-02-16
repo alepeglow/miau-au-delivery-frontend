@@ -1,0 +1,50 @@
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar__content {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.brand__name {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.menu {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  font-family: Poppins, Inter, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.menu a {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+
+.menu a.active {
+  color: var(--primary);
+  background: rgba(124, 92, 255, 0.10);
+}
+
+.avatar {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}

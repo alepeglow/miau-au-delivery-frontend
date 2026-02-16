@@ -1,0 +1,136 @@
+<section class="page-wrap">
+  <div class="container">
+    <div class="hero">
+      <h1 class="title-font">Cadastrar Pet</h1>
+      <p class="subtitle">Insira as informações do seu pet.</p>
+      <div class="emoji">🧡🐾💚</div>
+    </div>
+
+    <mat-card class="card-elevated form-card">
+      <!-- upload foto -->
+      <div class="photo">
+        <button type="button" class="photo__circle" (click)="onPhotoMock()">
+          <mat-icon>photo_camera</mat-icon>
+        </button>
+        <button type="button" class="photo__plus" (click)="onPhotoMock()" aria-label="Adicionar foto">
+          <mat-icon>add</mat-icon>
+        </button>
+        <div class="photo__label">Enviar foto do pet</div>
+      </div>
+
+      <form class="grid" [formGroup]="form" (ngSubmit)="save()">
+        <!-- linha 1 -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Nome do Pet</mat-label>
+          <input matInput placeholder="Ex: Bolinha" formControlName="name" />
+          <mat-error *ngIf="name.touched && name.invalid">
+            Nome é obrigatório.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Espécie</mat-label>
+          <mat-select formControlName="species" placeholder="Selecione...">
+            <mat-option *ngFor="let opt of speciesOptions" [value]="opt.value">
+              {{ opt.label }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="species.touched && species.invalid">
+            Espécie é obrigatória.
+          </mat-error>
+        </mat-form-field>
+
+        <!-- linha 2 -->
+        <mat-form-field appearance="outline">
+          <mat-label>Raça</mat-label>
+          <input matInput placeholder="Ex: Poodle" formControlName="breed" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Idade</mat-label>
+          <input matInput type="number" placeholder="Ex: 3" formControlName="ageYears" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Peso (kg)</mat-label>
+          <input matInput type="number" placeholder="Ex: 8.5" formControlName="weightKg" />
+        </mat-form-field>
+
+        <!-- linha 3 -->
+        <div class="sex">
+          <div class="sex__label">Sexo</div>
+          <div class="sex__buttons">
+            <button type="button"
+              class="sex-btn"
+              [class.active]="form.value.sex === 'M'"
+              (click)="setSex('M')">
+              ♂ Macho
+            </button>
+            <button type="button"
+              class="sex-btn"
+              [class.active]="form.value.sex === 'F'"
+              (click)="setSex('F')">
+              ♀ Fêmea
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Data da Última Vacina</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="mm/dd/yyyy" formControlName="lastVaccineDate">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- observações -->
+        <mat-form-field appearance="outline" class="span-2">
+          <mat-label>Observações</mat-label>
+          <textarea matInput rows="4" placeholder="Informações adicionais sobre o pet..." formControlName="notes"></textarea>
+        </mat-form-field>
+
+        <!-- saúde do pet -->
+        <div class="health span-2" formGroupName="health">
+          <div class="health__title title-font">💚 Saúde do Pet</div>
+
+          <div class="health__grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Alergias</mat-label>
+              <input matInput placeholder="Ex: Frango, pólen" formControlName="allergies" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Medicamentos</mat-label>
+              <input matInput placeholder="Ex: Antiparasitário" formControlName="medications" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Restrições</mat-label>
+              <input matInput placeholder="Ex: Não pode correr muito" formControlName="restrictions" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Veterinário de Rotina</mat-label>
+              <input matInput placeholder="Ex: Dr. João Silva" formControlName="vetName" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- ações -->
+        <div class="actions span-2">
+          <button mat-raised-button color="primary" type="submit" class="btn-save">
+            <mat-icon>check_circle</mat-icon>
+            Salvar Pet
+          </button>
+
+          <button mat-stroked-button color="primary" type="button" (click)="cancel()" class="btn-cancel">
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card>
+
+    <div class="bottom-emoji">🦴🐾🦴</div>
+  </div>
+</section>
+
