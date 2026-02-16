@@ -1,0 +1,7 @@
+import { Routes } from '@angular/router';
+import { PetCreateComponent } from './features/pets/pages/pet-create/pet-create';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'pets/novo', pathMatch: 'full' },
+  { path: 'pets/novo', component: PetCreateComponent },
+];

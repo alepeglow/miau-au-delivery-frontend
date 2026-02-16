@@ -1,0 +1,118 @@
+/* =========================
+   Miau & Au — Design Tokens
+   ========================= */
+:root {
+  /* Brand */
+  --primary: #7C5CFF;
+  --bg: #F6F3FF;
+  --success: #7EE4C3;
+
+  /* Text */
+  --text: #1F2430;
+  --muted: #6B7280;
+
+  /* States */
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --border: rgba(31, 36, 48, 0.10);
+
+  /* Radius / shadow */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 8px 24px rgba(31, 36, 48, 0.08);
+}
+/* Base */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* Títulos e elementos “de marca” */
+h1, h2, h3, h4, h5, h6, .title-font {
+  font-family: Poppins, Inter, system-ui, sans-serif;
+}
+
+/* Container padrão */
+.container {
+  width: min(980px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* Card padrão do design */
+.card-elevated {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0,0,0,0.02);
+}
+/* =========================
+   Angular Material - overrides
+   ========================= */
+
+/* Botões */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: var(--primary);
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+.mat-mdc-outlined-button.mat-primary {
+  --mdc-outlined-button-label-text-color: var(--primary);
+  --mdc-outlined-button-outline-color: rgba(124, 92, 255, 0.55);
+}
+
+/* Inputs (borda/foco) */
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--primary) !important;
+}
+
+.mat-mdc-form-field .mdc-floating-label {
+  color: var(--muted);
+}
+
+/* Ícones */
+.mat-icon { color: inherit; }
+
+/* Fix: Angular Material overlays (mat-select / datepicker) ficando atrás */
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper {
+  z-index: 10000 !important;
+}
+
+.mat-mdc-select-panel,
+.mat-datepicker-content {
+  z-index: 10000 !important;
+}
+mat-card {
+  overflow: visible !important;
+}
+/* FIX overlay do Angular Material (select/datepicker) */
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper {
+  z-index: 20000 !important;
+}
+
+.mat-mdc-select-panel,
+.mat-datepicker-content {
+  z-index: 20000 !important;
+}
+/* Evita corte visual do dropdown */
+.mat-mdc-card,
+mat-card {
+  overflow: visible !important;
+}
+
+.mat-mdc-select-panel {
+  transform: none !important;
+}

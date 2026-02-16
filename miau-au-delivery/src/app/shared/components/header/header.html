@@ -1,0 +1,21 @@
+<header class="topbar">
+  <div class="container topbar__content">
+    <div class="brand">
+      <span class="brand__icon">🐾</span>
+      <span class="brand__name title-font">Miau &amp; Au Delivery</span>
+    </div>
+
+    <nav class="menu">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/pets/novo" routerLinkActive="active">Meus Pets</a>
+      <a routerLink="/servicos" routerLinkActive="active">Agendar Serviços</a>
+      <a routerLink="/acompanhamento" routerLinkActive="active">Acompanhamento</a>
+      <a routerLink="/perfil" routerLinkActive="active">Perfil</a>
+    </nav>
+
+    <button mat-icon-button class="avatar" aria-label="Perfil">
+      <mat-icon>person</mat-icon>
+    </button>
+  </div>
+</header>
+
