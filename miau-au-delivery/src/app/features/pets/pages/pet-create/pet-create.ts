@@ -45,7 +45,10 @@ export class PetCreateComponent {
     { value: 'OUTRO' as Species, label: 'Outro' },
   ];
 
-  form;
+  // ✅ Preview da foto (base64) para mostrar na tela
+  photoPreview: string | null = null;
+
+  form: any;
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +67,15 @@ export class PetCreateComponent {
       lastVaccineDate: [null as Date | null],
       notes: [''],
 
+      // ✅ NOVO: informações adicionais (pra bater com a tela do perfil)
+      additionalInfo: this.fb.group({
+        ownerName: [''], // Tutor Responsável
+        size: [''],      // Porte (Pequeno/Médio/Grande)
+        neutered: [null as boolean | null], // Castrado (Sim/Não)
+        coat: [''],      // Pelagem
+        temperament: [''], // Temperamento
+      }),
+
       health: this.fb.group({
         allergies: [''],
         medications: [''],
@@ -77,6 +89,39 @@ export class PetCreateComponent {
     this.form.patchValue({ sex: value });
   }
 
+  // ✅ abre seletor de arquivos e faz "upload" mockado (base64 no form)
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.snack.open('Escolha um arquivo de imagem (PNG/JPG).', 'OK', { duration: 2500 });
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64 = reader.result as string;
+
+      // preview na tela
+      this.photoPreview = base64;
+
+      // guarda no form (mock)
+      this.form.patchValue({ photoUrl: base64 });
+
+      this.snack.open('Foto carregada com sucesso!', 'OK', { duration: 2000 });
+    };
+
+    reader.readAsDataURL(file);
+
+    // permite selecionar o mesmo arquivo novamente
+    input.value = '';
+  }
+
+  // (pode manter se quiser, mas agora não é mais necessário)
   onPhotoMock() {
     this.form.patchValue({ photoUrl: 'mock://pet-photo' });
     this.snack.open('Foto do pet adicionada com sucesso!', 'OK', { duration: 2000 });
@@ -91,29 +136,40 @@ export class PetCreateComponent {
 
     const raw = this.form.getRawValue();
 
-const created = this.petsStore.add({
-  photoUrl: raw.photoUrl || '',
-  name: raw.name!,
-  species: raw.species!,
-  breed: raw.breed || '',
-  ageYears: raw.ageYears ?? null,
-  weightKg: raw.weightKg ?? null,
-  sex: raw.sex!,
-  lastVaccineDate: raw.lastVaccineDate ? new Date(raw.lastVaccineDate).toISOString() : null,
-  notes: raw.notes || '',
-  health: {
-    allergies: raw.health.allergies || undefined,
-    medications: raw.health.medications || undefined,
-    restrictions: raw.health.restrictions || undefined,
-    vetName: raw.health.vetName || undefined,
-  },
-});
+    const created = this.petsStore.add({
+      photoUrl: raw.photoUrl || '',
+      name: raw.name!,
+      species: raw.species!,
+      breed: raw.breed || '',
+      ageYears: raw.ageYears ?? null,
+      weightKg: raw.weightKg ?? null,
+      sex: raw.sex!,
+      lastVaccineDate: raw.lastVaccineDate
+        ? new Date(raw.lastVaccineDate).toISOString()
+        : null,
+      notes: raw.notes || '',
 
-this.snack.open('Pet salvo com sucesso! (mock)', 'OK', { duration: 2200 });
+      // ✅ NOVO: additionalInfo indo pro store (pra aparecer no perfil)
+      additionalInfo: {
+        ownerName: raw.additionalInfo?.ownerName || '',
+        size: raw.additionalInfo?.size || '',
+        neutered: raw.additionalInfo?.neutered ?? null,
+        coat: raw.additionalInfo?.coat || '',
+        temperament: raw.additionalInfo?.temperament || '',
+      },
 
-// próximo passo: perfil do pet
-this.router.navigateByUrl(`/pets/${created.id}`);
+      health: {
+        allergies: raw.health?.allergies || undefined,
+        medications: raw.health?.medications || undefined,
+        restrictions: raw.health?.restrictions || undefined,
+        vetName: raw.health?.vetName || undefined,
+      },
+    });
 
+    this.snack.open('Pet salvo com sucesso! (mock)', 'OK', { duration: 2200 });
+
+    // ✅ vai pro perfil do pet
+    this.router.navigateByUrl(`/pets/${created.id}`);
   }
 
   cancel() {

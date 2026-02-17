@@ -9,23 +9,42 @@
     <mat-card class="card-elevated form-card">
       <!-- upload foto -->
       <div class="photo">
-        <button type="button" class="photo__circle" (click)="onPhotoMock()">
-          <mat-icon>photo_camera</mat-icon>
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+
+        <button type="button" class="photo__circle" (click)="fileInput.click()">
+          <ng-container *ngIf="photoPreview; else noPhoto">
+            <img [src]="photoPreview" alt="Foto do pet" />
+          </ng-container>
+
+          <ng-template #noPhoto>
+            <mat-icon>photo_camera</mat-icon>
+          </ng-template>
         </button>
-        <button type="button" class="photo__plus" (click)="onPhotoMock()" aria-label="Adicionar foto">
+
+        <button
+          type="button"
+          class="photo__plus"
+          (click)="fileInput.click()"
+          aria-label="Adicionar foto"
+        >
           <mat-icon>add</mat-icon>
         </button>
+
         <div class="photo__label">Enviar foto do pet</div>
       </div>
 
       <form class="grid" [formGroup]="form" (ngSubmit)="save()">
-        <!-- linha 1 -->
+        <!-- DADOS PRINCIPAIS -->
         <mat-form-field appearance="outline" class="full">
           <mat-label>Nome do Pet</mat-label>
           <input matInput placeholder="Ex: Bolinha" formControlName="name" />
-          <mat-error *ngIf="name.touched && name.invalid">
-            Nome é obrigatório.
-          </mat-error>
+          <mat-error *ngIf="name.touched && name.invalid">Nome é obrigatório.</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full">
@@ -35,12 +54,9 @@
               {{ opt.label }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="species.touched && species.invalid">
-            Espécie é obrigatória.
-          </mat-error>
+          <mat-error *ngIf="species.touched && species.invalid">Espécie é obrigatória.</mat-error>
         </mat-form-field>
 
-        <!-- linha 2 -->
         <mat-form-field appearance="outline">
           <mat-label>Raça</mat-label>
           <input matInput placeholder="Ex: Poodle" formControlName="breed" />
@@ -56,20 +72,23 @@
           <input matInput type="number" placeholder="Ex: 8.5" formControlName="weightKg" />
         </mat-form-field>
 
-        <!-- linha 3 -->
         <div class="sex">
           <div class="sex__label">Sexo</div>
           <div class="sex__buttons">
-            <button type="button"
+            <button
+              type="button"
               class="sex-btn"
               [class.active]="form.value.sex === 'M'"
-              (click)="setSex('M')">
+              (click)="setSex('M')"
+            >
               ♂ Macho
             </button>
-            <button type="button"
+            <button
+              type="button"
               class="sex-btn"
               [class.active]="form.value.sex === 'F'"
-              (click)="setSex('F')">
+              (click)="setSex('F')"
+            >
               ♀ Fêmea
             </button>
           </div>
@@ -77,18 +96,66 @@
 
         <mat-form-field appearance="outline" class="full">
           <mat-label>Data da Última Vacina</mat-label>
-          <input matInput [matDatepicker]="picker" placeholder="mm/dd/yyyy" formControlName="lastVaccineDate">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="mm/dd/yyyy"
+            formControlName="lastVaccineDate"
+          />
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
-        <!-- observações -->
         <mat-form-field appearance="outline" class="span-2">
           <mat-label>Observações</mat-label>
-          <textarea matInput rows="4" placeholder="Informações adicionais sobre o pet..." formControlName="notes"></textarea>
+          <textarea
+            matInput
+            rows="4"
+            placeholder="Informações adicionais sobre o pet..."
+            formControlName="notes"
+          ></textarea>
         </mat-form-field>
 
-        <!-- saúde do pet -->
+        <!-- ✅ NOVO: INFORMAÇÕES ADICIONAIS -->
+        <div class="additional span-2" formGroupName="additionalInfo">
+          <div class="additional__title title-font">💜 Informações Adicionais</div>
+
+          <div class="additional__grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Tutor Responsável</mat-label>
+              <input matInput placeholder="Ex: Ana Paula Santos" formControlName="ownerName" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Porte</mat-label>
+              <mat-select placeholder="Selecione..." formControlName="size">
+                <mat-option value="Pequeno">Pequeno</mat-option>
+                <mat-option value="Médio">Médio</mat-option>
+                <mat-option value="Grande">Grande</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Castrado</mat-label>
+              <mat-select placeholder="Selecione..." formControlName="neutered">
+                <mat-option [value]="true">Sim</mat-option>
+                <mat-option [value]="false">Não</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Pelagem</mat-label>
+              <input matInput placeholder="Ex: Longa e dourada" formControlName="coat" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="span-2">
+              <mat-label>Temperamento</mat-label>
+              <input matInput placeholder="Ex: Dócil e brincalhão" formControlName="temperament" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- SAÚDE DO PET -->
         <div class="health span-2" formGroupName="health">
           <div class="health__title title-font">💚 Saúde do Pet</div>
 
@@ -115,14 +182,20 @@
           </div>
         </div>
 
-        <!-- ações -->
+        <!-- AÇÕES -->
         <div class="actions span-2">
           <button mat-raised-button color="primary" type="submit" class="btn-save">
             <mat-icon>check_circle</mat-icon>
             Salvar Pet
           </button>
 
-          <button mat-stroked-button color="primary" type="button" (click)="cancel()" class="btn-cancel">
+          <button
+            mat-stroked-button
+            color="primary"
+            type="button"
+            (click)="cancel()"
+            class="btn-cancel"
+          >
             <mat-icon>close</mat-icon>
             Cancelar
           </button>
@@ -133,4 +206,3 @@
     <div class="bottom-emoji">🦴🐾🦴</div>
   </div>
 </section>
-

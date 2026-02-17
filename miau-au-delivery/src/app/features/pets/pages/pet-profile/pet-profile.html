@@ -1,0 +1,184 @@
+<section class="page-wrap" *ngIf="pet as p">
+  <div class="container">
+
+    <button class="back" type="button" (click)="back()">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar para Meus Pets
+    </button>
+
+    <div class="layout">
+      <!-- COLUNA ESQUERDA -->
+      <div class="left">
+        <mat-card class="card-elevated main-card">
+          <div class="main-top">
+            <div class="pet-photo">
+              <div class="pet-photo__frame">
+                <!-- mock: se não tiver foto, usa ícone -->
+                <ng-container *ngIf="p.photoUrl; else noPhoto">
+                  <img [src]="p.photoUrl" alt="Foto do pet">
+                </ng-container>
+                <ng-template #noPhoto>
+                  <mat-icon>pets</mat-icon>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="main-info">
+              <div class="name-row">
+                <div>
+                  <h1 class="title-font">{{ p.name }}</h1>
+                  <div class="breed">{{ p.breed || '-' }}</div>
+                </div>
+
+                <button type="button" class="btn-edit" (click)="edit()">
+                  <mat-icon>edit</mat-icon>
+                  Editar Pet
+                </button>
+              </div>
+
+              <div class="stats">
+                <div class="stat">
+                  <div class="stat__icon soft-primary"><mat-icon>cake</mat-icon></div>
+                  <div>
+                    <div class="label">Idade</div>
+                    <div class="value">{{ p.ageYears ?? '-' }} anos</div>
+                  </div>
+                </div>
+
+                <div class="stat">
+                  <div class="stat__icon soft-warning"><mat-icon>straighten</mat-icon></div>
+                  <div>
+                    <div class="label">Porte</div>
+                    <div class="value">{{ p.additionalInfo?.size || '-' }}</div>
+                  </div>
+                </div>
+
+                <div class="stat">
+                  <div class="stat__icon soft-success"><mat-icon>monitor_weight</mat-icon></div>
+                  <div>
+                    <div class="label">Peso</div>
+                    <div class="value">{{ p.weightKg ?? '-' }} kg</div>
+                  </div>
+                </div>
+
+                <div class="stat">
+                  <div class="stat__icon soft-primary"><mat-icon>male</mat-icon></div>
+                  <div>
+                    <div class="label">Sexo</div>
+                    <div class="value">{{ p.sex === 'M' ? 'Macho' : 'Fêmea' }}</div>
+                  </div>
+                </div>
+
+                <div class="tutor">
+                  <div class="tutor__avatar">👤</div>
+                  <div>
+                    <div class="label">Tutor Responsável</div>
+                    <div class="value">{{ p.additionalInfo?.ownerName || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+
+        <div class="shortcuts">
+          <button class="shortcut card-elevated" type="button" (click)="goVaccines()">
+            <div class="shortcut__icon soft-primary"><mat-icon>vaccines</mat-icon></div>
+            <div class="shortcut__title title-font">Carteirinha de Vacinas</div>
+            <div class="shortcut__desc">Visualizar histórico de vacinação</div>
+          </button>
+
+          <button class="shortcut card-elevated" type="button" (click)="goMedicalHistory()">
+            <div class="shortcut__icon soft-success"><mat-icon>medical_services</mat-icon></div>
+            <div class="shortcut__title title-font">Histórico Médico</div>
+            <div class="shortcut__desc">Consultas e exames realizados</div>
+          </button>
+
+          <button class="shortcut card-elevated" type="button" (click)="goServiceHistory()">
+            <div class="shortcut__icon soft-primary"><mat-icon>history</mat-icon></div>
+            <div class="shortcut__title title-font">Histórico de Serviços</div>
+            <div class="shortcut__desc">Banhos, tosas e outros serviços</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA -->
+      <div class="right">
+        <mat-card class="card-elevated side-card">
+          <div class="side-title title-font">
+            <mat-icon class="i">info</mat-icon> Informações Adicionais
+          </div>
+
+          <div class="info-list">
+            <div class="row">
+              <div class="k">Castrado</div>
+              <div class="v">{{ p.additionalInfo?.neutered ? 'Sim' : 'Não' }}</div>
+            </div>
+            <div class="row">
+              <div class="k">Pelagem</div>
+              <div class="v">{{ p.additionalInfo?.coat || '-' }}</div>
+            </div>
+            <div class="row">
+              <div class="k">Temperamento</div>
+              <div class="v">{{ p.additionalInfo?.temperament || '-' }}</div>
+            </div>
+            <div class="row">
+              <div class="k">Cadastrado em</div>
+              <div class="v">{{ p.createdAt | date:'dd/MM/yyyy' }}</div>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="card-elevated side-card obs-card">
+          <div class="side-title title-font">
+            <mat-icon class="i">shield</mat-icon> Observações Importantes
+          </div>
+
+          <div class="pill" *ngIf="p.health?.allergies">
+            <span class="dot danger"></span>
+            {{ p.health?.allergies }}
+          </div>
+
+          <div class="pill" *ngIf="p.health?.medications">
+            <span class="dot success"></span>
+            {{ p.health?.medications }}
+          </div>
+
+          <div class="pill" *ngIf="!p.health?.allergies && !p.health?.medications">
+            Nenhuma observação.
+          </div>
+        </mat-card>
+
+        <!-- ✅ CORRIGIDO: apenas 1 mat-card -->
+        <mat-card class="card-elevated side-card">
+          <div class="side-title title-font">
+            <mat-icon class="i">event</mat-icon> Próximos Agendamentos
+          </div>
+
+          <ng-container *ngIf="upcoming.length > 0; else emptyUpcoming">
+            <div
+              class="upcoming"
+              *ngFor="let u of upcoming"
+              [class.success]="u.variant === 'success'"
+              [class.primary]="u.variant === 'primary'"
+            >
+              <div class="u-title">{{ u.title }}</div>
+              <div class="u-date">{{ u.dateLabel }}</div>
+            </div>
+          </ng-container>
+
+          <ng-template #emptyUpcoming>
+            <div class="empty-state">
+              <mat-icon class="empty-icon">event_busy</mat-icon>
+
+              <div class="empty-title">Sem agendamentos</div>
+              <div class="empty-subtitle">
+                Nenhum serviço agendado para este pet no momento.
+              </div>
+            </div>
+          </ng-template>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>

@@ -28,3 +28,33 @@ export interface Pet {
   createdAt: string; // ISO
   updatedAt: string; // ISO
 }
+export interface PetAdditionalInfo {
+  neutered?: boolean;      // castrado
+  coat?: string;           // pelagem
+  temperament?: string;    // temperamento
+  size?: string;           // porte
+  ownerName?: string;      // tutor responsável
+}
+
+export interface Pet {
+  id: string;
+  photoUrl?: string;
+
+  name: string;
+  species: Species;
+  breed?: string;
+
+  ageYears?: number | null;
+  weightKg?: number | null;
+  sex: Sex;
+
+  lastVaccineDate?: string | null;
+  notes?: string;
+
+  health?: PetHealth;
+
+  additionalInfo?: PetAdditionalInfo;  // 👈 adiciona isso
+
+  createdAt: string;
+  updatedAt: string;
+}
