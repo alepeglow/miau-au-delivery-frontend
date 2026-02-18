@@ -13,7 +13,7 @@ export class PetsStore {
 
   pets$ = this._pets$.asObservable();
 
-  getSnapshot() {
+  getSnapshot(): Pet[] {
     return this._pets$.getValue();
   }
 
@@ -31,20 +31,36 @@ export class PetsStore {
     return newPet;
   }
 
+  getById(id: string): Pet | undefined {
+    return this.getSnapshot().find((p) => p.id === id);
+  }
+
   update(id: string, patch: Partial<Pet>): Pet | null {
     const now = new Date().toISOString();
     const pets = this.getSnapshot();
-    const idx = pets.findIndex(p => p.id === id);
+    const idx = pets.findIndex((p) => p.id === id);
     if (idx < 0) return null;
 
-    const updated: Pet = { ...pets[idx], ...patch, updatedAt: now };
+    const current = pets[idx];
+
+    const updated: Pet = {
+      ...current,
+      ...patch,
+      // ✅ mantém os dados existentes (não apaga health/additionalInfo)
+      health: { ...(current.health ?? {}), ...(patch.health ?? {}) },
+      additionalInfo: { ...(current.additionalInfo ?? {}), ...(patch.additionalInfo ?? {}) },
+      updatedAt: now,
+    };
+
     const next = [...pets];
     next[idx] = updated;
     this._pets$.next(next);
+
     return updated;
   }
 
-  getById(id: string): Pet | undefined {
-    return this.getSnapshot().find(p => p.id === id);
+  // útil pra futura tela "Meus Pets"
+  list(): Pet[] {
+    return this.getSnapshot();
   }
 }

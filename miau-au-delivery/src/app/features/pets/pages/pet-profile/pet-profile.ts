@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AppointmentsStore } from '../../../appointments/services/appointments.store';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -19,10 +20,12 @@ type Upcoming = { title: string; dateLabel: string; variant: 'success' | 'primar
   templateUrl: './pet-profile.html',
   styleUrl: './pet-profile.scss',
 })
-export class PetProfileComponent {
+export class PetProfileComponent implements OnDestroy {
   pet?: Pet;
-
   upcoming: Upcoming[] = [];
+
+  private sub = new Subscription();
+  private petId!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,17 +38,37 @@ export class PetProfileComponent {
       this.router.navigateByUrl('/pets/novo');
       return;
     }
+    this.petId = id;
 
-    this.pet = this.petsStore.getById(id);
-    if (!this.pet) {
-      this.router.navigateByUrl('/pets/novo');
-      return;
+    // ✅ Reativo: sempre que o store muda (ex: editou e salvou), atualiza o perfil
+    this.sub.add(
+      this.petsStore.pets$.subscribe((pets) => {
+        const found = pets.find((p) => p.id === this.petId);
+
+        if (!found) {
+          this.router.navigateByUrl('/pets/novo');
+          return;
+        }
+
+        this.pet = found;
+        this.loadUpcoming(found.id);
+      })
+    );
+
+    // primeira carga (caso o subscribe demore 0ms, mas é ok)
+    const snap = this.petsStore.getById(this.petId);
+    if (snap) {
+      this.pet = snap;
+      this.loadUpcoming(snap.id);
     }
+  }
 
-    // ✅ Próximos agendamentos vindos do mock por petId
-    const apps = this.appointmentsStore.getByPetId(this.pet.id);
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 
-    // ✅ fallback: se não tiver agendamentos pro pet novo, mostra exemplos (mock)
+  private loadUpcoming(petId: string) {
+    const apps = this.appointmentsStore.getByPetId(petId);
     const list = apps.length > 0 ? apps : this.appointmentsStore.getPreviewMocks();
 
     this.upcoming = list.map((a) => ({
@@ -56,20 +79,18 @@ export class PetProfileComponent {
   }
 
   back() {
-    // no futuro: /pets (listagem). Por enquanto volta pro cadastro.
     this.router.navigateByUrl('/pets/novo');
   }
 
   edit() {
-    // no futuro: /pets/:id/editar
-    this.router.navigateByUrl('/pets/novo');
+    if (!this.pet?.id) return;
+    this.router.navigateByUrl(`/pets/${this.pet.id}/editar`);
   }
 
   goVaccines() { /* futuro */ }
   goMedicalHistory() { /* futuro */ }
   goServiceHistory() { /* futuro */ }
 
-  // ===== helper (datas BR) =====
   private formatBr(d: Date) {
     const dd = String(d.getDate()).padStart(2, '0');
     const mm = String(d.getMonth() + 1).padStart(2, '0');
