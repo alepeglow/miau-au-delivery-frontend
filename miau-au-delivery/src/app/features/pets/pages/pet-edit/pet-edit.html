@@ -1,0 +1,88 @@
+<section class="page-wrap" *ngIf="pet as p">
+    <div class="container">
+  
+      <div class="crumbs">
+        <span class="muted">Meus Pets</span>
+        <span class="sep">›</span>
+        <span class="muted">{{ p.name }}</span>
+        <span class="sep">›</span>
+        <span class="link">Editar</span>
+      </div>
+  
+      <div class="hero">
+        <div class="hero__icon">
+          <mat-icon>edit</mat-icon>
+        </div>
+        <div>
+          <h1 class="title-font">Editar Pet</h1>
+          <p class="subtitle">Atualize as informações do seu amiguinho</p>
+        </div>
+      </div>
+  
+      <mat-card class="card-elevated form-card">
+        <!-- foto -->
+        <div class="photo">
+          <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+  
+          <button type="button" class="photo__circle" (click)="fileInput.click()">
+            <ng-container *ngIf="photoPreview; else noPhoto">
+              <img [src]="photoPreview" alt="Foto do pet" />
+            </ng-container>
+  
+            <ng-template #noPhoto>
+              <mat-icon>pets</mat-icon>
+            </ng-template>
+          </button>
+  
+          <button type="button" class="photo__badge" (click)="fileInput.click()" aria-label="Alterar foto">
+            <mat-icon>photo_camera</mat-icon>
+          </button>
+  
+          <div class="photo__label">Clique no ícone para alterar a foto</div>
+        </div>
+  
+        <form class="grid" [formGroup]="form" (ngSubmit)="save()">
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Nome do Pet</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Raça</mat-label>
+            <input matInput formControlName="breed" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Idade</mat-label>
+            <input matInput formControlName="ageYears" />
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Porte</mat-label>
+            <mat-select formControlName="size">
+              <mat-option *ngFor="let s of sizeOptions" [value]="s">{{ s }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="span-2">
+            <mat-label>Observações</mat-label>
+            <textarea matInput rows="4" formControlName="notes"></textarea>
+            <mat-hint>Inclua alergias, medicamentos, comportamentos especiais, etc.</mat-hint>
+          </mat-form-field>
+  
+          <div class="actions span-2">
+            <button mat-stroked-button color="primary" type="button" (click)="cancel()">
+              <mat-icon>close</mat-icon>
+              Cancelar
+            </button>
+  
+            <button mat-raised-button color="primary" type="submit" class="btn-save">
+              <mat-icon>check</mat-icon>
+              Salvar Alterações
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </section>
+  
