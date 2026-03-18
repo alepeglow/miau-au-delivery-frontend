@@ -87,7 +87,10 @@ export class PetProfileComponent implements OnDestroy {
     this.router.navigateByUrl(`/pets/${this.pet.id}/editar`);
   }
 
-  goVaccines() { /* futuro */ }
+ goVaccines() {
+  if (!this.pet?.id) return;
+  this.router.navigateByUrl(`/pets/${this.pet.id}/carteirinha`);
+}
   goMedicalHistory() { /* futuro */ }
   goServiceHistory() { /* futuro */ }
 

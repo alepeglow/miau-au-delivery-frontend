@@ -116,3 +116,13 @@ mat-card {
 .mat-mdc-select-panel {
   transform: none !important;
 }
+
+.miau-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 18px !important;
+  background: #fff !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.miau-dialog .mat-mdc-dialog-container {
+  padding: 0 !important; /* tira padding padrão do Material */
+}
