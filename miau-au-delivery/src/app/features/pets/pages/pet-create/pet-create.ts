@@ -166,7 +166,7 @@ export class PetCreateComponent {
       },
     });
 
-    this.snack.open('Pet salvo com sucesso! (mock)', 'OK', { duration: 2200 });
+    this.snack.open('Pet salvo com sucesso!', 'OK', { duration: 2200 });
 
     // ✅ vai pro perfil do pet
     this.router.navigateByUrl(`/pets/${created.id}`);

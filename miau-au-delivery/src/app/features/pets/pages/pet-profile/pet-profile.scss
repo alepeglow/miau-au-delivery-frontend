@@ -177,6 +177,8 @@ h1 { margin: 0; font-size: 34px; color: var(--text); font-weight: 600; }
 .dot { width: 10px; height: 10px; border-radius: 999px; }
 .dot.danger { background: var(--danger); }
 .dot.success { background: var(--success); }
+.dot.primary { background: var(--primary); }
+
 
 .upcoming {
   border-radius: 14px;

@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
+
 import { PetCreateComponent } from './features/pets/pages/pet-create/pet-create';
 import { PetProfileComponent } from './features/pets/pages/pet-profile/pet-profile';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'pets/novo', pathMatch: 'full' },
+
   { path: 'pets/novo', component: PetCreateComponent },
   {
   path: 'pets/:id/editar',
@@ -18,4 +20,14 @@ export const routes: Routes = [
     ),
 },
 
+  {
+    path: 'pets/:id/editar',
+    loadComponent: () =>
+      import('./features/pets/pages/pet-edit/pet-edit').then(
+        (m) => m.PetEditComponent
+      ),
+  },
+
+  // opcional: fallback pra rotas inválidas
+  { path: '**', redirectTo: 'pets/novo' },
 ];

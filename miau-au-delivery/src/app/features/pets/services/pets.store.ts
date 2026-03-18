@@ -37,12 +37,18 @@ export class PetsStore {
   }
 
   getById(id: string): Pet | undefined {
-    return this.getSnapshot().find(p => p.id === id);
+    return this.getSnapshot().find((p) => p.id === id);
   }
 
   add(petInput: Omit<Pet, 'id' | 'createdAt' | 'updatedAt'>): Pet {
     const now = new Date().toISOString();
-    const newPet: Pet = { ...petInput, id: genId(), createdAt: now, updatedAt: now };
+
+    const newPet: Pet = {
+      ...petInput,
+      id: genId(),
+      createdAt: now,
+      updatedAt: now,
+    };
 
     const next = [newPet, ...this.getSnapshot()];
     this._pets$.next(next);
@@ -54,7 +60,7 @@ export class PetsStore {
   update(id: string, patch: Partial<Pet>): Pet | null {
     const now = new Date().toISOString();
     const pets = this.getSnapshot();
-    const idx = pets.findIndex(p => p.id === id);
+    const idx = pets.findIndex((p) => p.id === id);
     if (idx < 0) return null;
 
     const current = pets[idx];
@@ -62,6 +68,7 @@ export class PetsStore {
     const updated: Pet = {
       ...current,
       ...patch,
+      // ✅ mantém dados existentes (não apaga sub-objetos)
       health: { ...(current.health ?? {}), ...(patch.health ?? {}) },
       additionalInfo: { ...(current.additionalInfo ?? {}), ...(patch.additionalInfo ?? {}) },
       updatedAt: now,
@@ -69,6 +76,7 @@ export class PetsStore {
 
     const next = [...pets];
     next[idx] = updated;
+
     this._pets$.next(next);
     this.persist(next);
 
