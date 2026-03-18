@@ -65,7 +65,10 @@ export class PetProfileComponent {
     this.router.navigateByUrl('/pets/novo');
   }
 
-  goVaccines() { /* futuro */ }
+ goVaccines() {
+  if (!this.pet?.id) return;
+  this.router.navigateByUrl(`/pets/${this.pet.id}/carteirinha`);
+}
   goMedicalHistory() { /* futuro */ }
   goServiceHistory() { /* futuro */ }
 

@@ -5,6 +5,17 @@ import { PetProfileComponent } from './features/pets/pages/pet-profile/pet-profi
 export const routes: Routes = [
   { path: '', redirectTo: 'pets/novo', pathMatch: 'full' },
   { path: 'pets/novo', component: PetCreateComponent },
+  {
+  path: 'pets/:id/editar',
+  loadComponent: () =>
+    import('./features/pets/').then(m => m.PetEditComponent),
+},
   { path: 'pets/:id', component: PetProfileComponent },
+  { path: 'pets/:id/carteirinha',
+  loadComponent: () =>
+    import('./features/pets/pages/pet-vaccines/pet-vaccines').then(
+      (m) => m.PetVaccinesComponent
+    ),
+},
 
 ];

@@ -7,27 +7,47 @@ function genId(prefix = 'pet') {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
 }
 
+const STORAGE_KEY = 'miauau_pets';
+
 @Injectable({ providedIn: 'root' })
 export class PetsStore {
-  private readonly _pets$ = new BehaviorSubject<Pet[]>([...PETS_MOCK]);
-
+  private readonly _pets$ = new BehaviorSubject<Pet[]>(this.loadInitial());
   pets$ = this._pets$.asObservable();
 
-  getSnapshot() {
+  private loadInitial(): Pet[] {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw) as Pet[];
+    } catch {}
+    return [...PETS_MOCK];
+  }
+
+  private persist(items: Pet[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {}
+  }
+
+  getSnapshot(): Pet[] {
     return this._pets$.getValue();
+  }
+
+  list(): Pet[] {
+    return this.getSnapshot();
+  }
+
+  getById(id: string): Pet | undefined {
+    return this.getSnapshot().find(p => p.id === id);
   }
 
   add(petInput: Omit<Pet, 'id' | 'createdAt' | 'updatedAt'>): Pet {
     const now = new Date().toISOString();
+    const newPet: Pet = { ...petInput, id: genId(), createdAt: now, updatedAt: now };
 
-    const newPet: Pet = {
-      ...petInput,
-      id: genId(),
-      createdAt: now,
-      updatedAt: now,
-    };
+    const next = [newPet, ...this.getSnapshot()];
+    this._pets$.next(next);
+    this.persist(next);
 
-    this._pets$.next([newPet, ...this.getSnapshot()]);
     return newPet;
   }
 
@@ -37,14 +57,21 @@ export class PetsStore {
     const idx = pets.findIndex(p => p.id === id);
     if (idx < 0) return null;
 
-    const updated: Pet = { ...pets[idx], ...patch, updatedAt: now };
+    const current = pets[idx];
+
+    const updated: Pet = {
+      ...current,
+      ...patch,
+      health: { ...(current.health ?? {}), ...(patch.health ?? {}) },
+      additionalInfo: { ...(current.additionalInfo ?? {}), ...(patch.additionalInfo ?? {}) },
+      updatedAt: now,
+    };
+
     const next = [...pets];
     next[idx] = updated;
     this._pets$.next(next);
-    return updated;
-  }
+    this.persist(next);
 
-  getById(id: string): Pet | undefined {
-    return this.getSnapshot().find(p => p.id === id);
+    return updated;
   }
 }

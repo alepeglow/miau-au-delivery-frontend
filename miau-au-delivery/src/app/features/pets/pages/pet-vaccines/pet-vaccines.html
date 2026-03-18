@@ -1,0 +1,104 @@
+<section class="page-wrap" *ngIf="pet as p">
+  <div class="container">
+
+    <div class="crumbs">
+      <button class="back" type="button" (click)="backToPets()">
+        <mat-icon>arrow_back</mat-icon> Meus Pets
+      </button>
+      <span class="sep">›</span>
+      <span class="link">Carteirinha</span>
+    </div>
+
+    <h1 class="title-font">Carteirinha Digital de Vacinas</h1>
+    <p class="subtitle">Acompanhe as vacinas e doses aplicadas.</p>
+
+    <!-- card do pet -->
+    <mat-card class="card-elevated pet-card">
+      <div class="pet-card__left">
+        <div class="avatar">
+          <img *ngIf="p.photoUrl" [src]="p.photoUrl" alt="Foto do pet" />
+          <mat-icon *ngIf="!p.photoUrl">pets</mat-icon>
+        </div>
+
+        <div class="pet-meta">
+          <div class="pet-name title-font">{{ p.name }}</div>
+          <div class="pet-line">
+            <span>🐾 {{ p.breed || '-' }}</span>
+            <span>🎂 {{ p.ageYears ?? '-' }} anos</span>
+            <span>⚖️ {{ p.weightKg ?? '-' }} kg</span>
+          </div>
+        </div>
+      </div>
+
+      <button mat-raised-button class="btn-primary" type="button" (click)="viewPetProfile()">
+        Ver Perfil do Pet
+      </button>
+    </mat-card>
+
+    <!-- ✅ LISTA / ESTADO VAZIO -->
+    <ng-container *ngIf="vaccines.length > 0; else emptyVaccines">
+      <!-- lista de vacinas -->
+      <div class="v-list">
+        <mat-card class="card-elevated v-card" *ngFor="let v of vaccines">
+          <div class="v-head">
+            <div class="v-icon">💉</div>
+
+            <div class="v-title">
+              <div class="name title-font">{{ v.name }}</div>
+              <div class="desc">{{ v.description }}</div>
+            </div>
+
+            <div class="chip" [ngClass]="statusClass(v.status)">
+              <mat-icon class="chip-i">check</mat-icon>
+              {{ statusLabel(v.status) }}
+            </div>
+          </div>
+
+          <div class="v-grid">
+            <div>
+              <div class="k">Data Aplicada</div>
+              <div class="val">{{ v.appliedAt | date:'dd/MM/yyyy' }}</div>
+            </div>
+            <div>
+              <div class="k">Próxima Dose</div>
+              <div class="val">{{ v.nextDoseAt ? (v.nextDoseAt | date:'dd/MM/yyyy') : '-' }}</div>
+            </div>
+            <div>
+              <div class="k">Veterinário</div>
+              <div class="val">{{ v.vetName || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="v-actions">
+            <button mat-stroked-button class="btn-outline" type="button" (click)="editVaccine(v)">Editar</button>
+            <button mat-raised-button class="btn-success" type="button" (click)="addDose(v)">Adicionar Dose</button>
+            <button mat-stroked-button class="btn-outline" type="button" (click)="attachProof(v)">
+              <mat-icon>attach_file</mat-icon> Anexar Comprovante
+            </button>
+          </div>
+        </mat-card>
+      </div>
+
+      <!-- botão geral (quando há vacinas) -->
+      <button mat-raised-button class="btn-add" type="button" (click)="addNewVaccine()">
+        <mat-icon>add</mat-icon>
+        Adicionar Nova Vacina
+      </button>
+    </ng-container>
+
+    <!-- ✅ estado vazio -->
+    <ng-template #emptyVaccines>
+      <mat-card class="card-elevated empty">
+        <mat-icon class="empty__icon">vaccines</mat-icon>
+        <div class="empty__title">Sem vacinas cadastradas</div>
+        <div class="empty__subtitle">Adicione a primeira vacina para este pet.</div>
+
+        <button mat-raised-button class="btn-add" type="button" (click)="addNewVaccine()">
+          <mat-icon>add</mat-icon>
+          Adicionar Nova Vacina
+        </button>
+      </mat-card>
+    </ng-template>
+
+  </div>
+</section>
