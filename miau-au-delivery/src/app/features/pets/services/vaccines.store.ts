@@ -49,19 +49,19 @@ export class VaccinesStore {
   }
 
   update(id: string, patch: Partial<VaccineRecord>) {
-    const items = this.getSnapshot();
-    const idx = items.findIndex(v => v.id === id);
-    if (idx < 0) return null;
+  const items = this.getSnapshot();
+  const idx = items.findIndex(v => v.id === id);
+  if (idx < 0) return null;
 
-    const updated: VaccineRecord = { ...items[idx], ...patch };
-    const next = [...items];
-    next[idx] = updated;
+  const updated: VaccineRecord = { ...items[idx], ...patch };
+  const next = [...items];
+  next[idx] = updated;
 
-    this._items$.next(next);
-    this.persist(next);
+  this._items$.next(next);     // ✅ obrigatório
+  this.persist(next);          // ✅ persistir
 
-    return updated;
-  }
+  return updated;
+}
 
   // opcional: útil se você quiser remover registros no futuro
   remove(id: string) {

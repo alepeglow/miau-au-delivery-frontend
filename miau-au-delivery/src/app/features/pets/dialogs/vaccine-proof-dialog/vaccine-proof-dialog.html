@@ -1,0 +1,57 @@
+<div class="dialog">
+  <div class="dialog__header">
+    <div class="dialog__title title-font">
+      <span class="icon"><mat-icon>attach_file</mat-icon></span>
+      Anexar Comprovante
+    </div>
+
+    <button mat-icon-button type="button" class="close" (click)="cancel()" aria-label="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog__body">
+    <div class="hint">
+      Vacina: <b>{{ data.vaccineName }}</b>
+    </div>
+
+    <input
+      #fileInput
+      type="file"
+      accept="image/*,application/pdf"
+      hidden
+      (change)="onFileSelected($event)"
+    />
+
+    <button mat-raised-button class="btn-primary" type="button" (click)="fileInput.click()">
+      <mat-icon>upload</mat-icon>
+      Selecionar arquivo
+    </button>
+
+    <div class="preview" *ngIf="preview">
+      <div class="file">{{ fileName }}</div>
+
+      <img
+        *ngIf="preview.startsWith('data:image')"
+        [src]="preview"
+        alt="Preview do comprovante"
+      />
+
+      <div class="pdf" *ngIf="preview.startsWith('data:application/pdf')">
+        <mat-icon>picture_as_pdf</mat-icon>
+        PDF anexado (preview não exibido)
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog__actions">
+    <button mat-stroked-button class="btn-outline" type="button" (click)="cancel()">
+      Cancelar
+    </button>
+
+    <button mat-raised-button class="btn-primary" type="button" (click)="save()" [disabled]="!preview">
+      <mat-icon>check</mat-icon>
+      Salvar
+    </button>
+  </div>
+</div>

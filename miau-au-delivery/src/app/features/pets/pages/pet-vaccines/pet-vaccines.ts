@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-
+import { VaccineProofDialogComponent, VaccineProofDialogResult } from '../../dialogs/vaccine-proof-dialog/vaccine-proof-dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -125,11 +125,21 @@ export class PetVaccinesComponent implements OnDestroy {
   }
 
   attachProof(v: VaccineRecord) {
-    // por enquanto só marca que tem comprovante (mock)
-    this.vaccinesStore.update(v.id, {
-      proofUrl: 'mock://comprovante',
-    });
-  }
+  const ref = this.dialog.open(VaccineProofDialogComponent, {
+    width: '720px',
+    maxWidth: '92vw',
+    autoFocus: false,
+    restoreFocus: false,
+    panelClass: 'miau-dialog',
+    data: { vaccineName: v.name },
+  });
+
+  ref.afterClosed().subscribe((res: VaccineProofDialogResult | undefined) => {
+    if (!res) return;
+    this.vaccinesStore.update(v.id, { proofUrl: res.proofUrl });
+    this.loadVaccines(); // força refresh imediato da lista na tela
+  });
+}
 
   statusLabel(status: VaccineRecord['status']) {
     if (status === 'EM_DIA') return 'Em dia';
