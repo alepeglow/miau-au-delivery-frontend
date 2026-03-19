@@ -1,7 +1,5 @@
 <section class="page-wrap" *ngIf="pet as p">
-
   <div class="container">
-
     <button class="back" type="button" (click)="back()">
       <mat-icon>arrow_back</mat-icon>
       Voltar para Meus Pets
@@ -16,7 +14,7 @@
               <div class="pet-photo__frame">
                 <!-- mock: se não tiver foto, usa ícone -->
                 <ng-container *ngIf="p.photoUrl; else noPhoto">
-                  <img [src]="p.photoUrl" alt="Foto do pet">
+                  <img [src]="p.photoUrl" alt="Foto do pet" />
                 </ng-container>
                 <ng-template #noPhoto>
                   <mat-icon>pets</mat-icon>
@@ -125,7 +123,7 @@
             </div>
             <div class="row">
               <div class="k">Cadastrado em</div>
-              <div class="v">{{ p.createdAt | date:'dd/MM/yyyy' }}</div>
+              <div class="v">{{ p.createdAt | date: 'dd/MM/yyyy' }}</div>
             </div>
           </div>
         </mat-card>
@@ -144,13 +142,25 @@
             <span class="dot success"></span>
             {{ p.health?.medications }}
           </div>
+          <!-- Restrições -->
+          <div class="pill" *ngFor="let r of p.health?.restrictions || []">
+            <span class="dot warning"></span>
+            {{ r }}
+          </div>
           <div class="pill" *ngIf="p.notes">
             <span class="dot primary"></span>
             {{ p.notes }}
           </div>
-          
 
-          <div class="pill" *ngIf="!p.health?.allergies && !p.health?.medications">
+          <div
+            class="pill"
+            *ngIf="
+              (p.health?.allergies?.length || 0) === 0 &&
+              (p.health?.medications?.length || 0) === 0 &&
+              (p.health?.restrictions?.length || 0) === 0 &&
+              (p.notes?.length || 0) === 0
+            "
+          >
             Nenhuma observação.
           </div>
         </mat-card>
@@ -178,9 +188,7 @@
               <mat-icon class="empty-icon">event_busy</mat-icon>
 
               <div class="empty-title">Sem agendamentos</div>
-              <div class="empty-subtitle">
-                Nenhum serviço agendado para este pet no momento.
-              </div>
+              <div class="empty-subtitle">Nenhum serviço agendado para este pet no momento.</div>
             </div>
           </ng-template>
         </mat-card>

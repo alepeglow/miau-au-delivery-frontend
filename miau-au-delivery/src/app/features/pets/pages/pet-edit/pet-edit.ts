@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,6 +41,8 @@ type Size = 'Pequeno' | 'Médio' | 'Grande';
 })
 export class PetEditComponent {
   pet?: Pet;
+  petId!: string;
+
   photoPreview: string | null = null;
 
   sizeOptions: Size[] = ['Pequeno', 'Médio', 'Grande'];
@@ -54,6 +61,7 @@ export class PetEditComponent {
       this.router.navigateByUrl('/pets/novo');
       return;
     }
+    this.petId = id;
 
     const pet = this.petsStore.getById(id);
     if (!pet) {
@@ -64,16 +72,85 @@ export class PetEditComponent {
     this.pet = pet;
     this.photoPreview = pet.photoUrl || null;
 
+    // ✅ monta o form
     this.form = this.fb.group({
       photoUrl: [pet.photoUrl || ''],
       name: [pet.name || '', [Validators.required, Validators.minLength(2)]],
       breed: [pet.breed || '', [Validators.required]],
       ageYears: [pet.ageYears ?? null, [Validators.required]],
       size: [pet.additionalInfo?.size ?? null, [Validators.required]],
-      notes: [pet.notes || ''],
+
+      // ✅ listas (FormArray)
+      notes: this.fb.array(this.toControls(pet.notes)),
+      allergies: this.fb.array(this.toControls(pet.health?.allergies)),
+      medications: this.fb.array(this.toControls(pet.health?.medications)),
+      restrictions: this.fb.array(this.toControls(pet.health?.restrictions)),
+
+      vetName: [pet.health?.vetName || ''],
     });
+
+    // ✅ garante pelo menos 1 campo visível em cada lista (UX)
+    this.ensureAtLeastOne(this.notesArray);
+    this.ensureAtLeastOne(this.allergiesArray);
+    this.ensureAtLeastOne(this.medicationsArray);
+    this.ensureAtLeastOne(this.restrictionsArray);
   }
 
+  // ===== helpers FormArray =====
+
+  private toControls(values?: string[] | string | null) {
+  // aceita array, string ou null (compat com dados antigos)
+  const arr = Array.isArray(values)
+    ? values
+    : typeof values === 'string' && values.trim().length
+      ? [values.trim()]
+      : [];
+
+  return arr.filter(Boolean).map((v) => this.fb.control(v));
+}
+
+  private ensureAtLeastOne(arr: FormArray) {
+    if (arr.length === 0) arr.push(this.fb.control(''));
+  }
+
+  get notesArray(): FormArray {
+    return this.form.get('notes') as FormArray;
+  }
+  get allergiesArray(): FormArray {
+    return this.form.get('allergies') as FormArray;
+  }
+  get medicationsArray(): FormArray {
+    return this.form.get('medications') as FormArray;
+  }
+  get restrictionsArray(): FormArray {
+    return this.form.get('restrictions') as FormArray;
+  }
+
+  addNote() { this.notesArray.push(this.fb.control('')); }
+  removeNote(i: number) {
+    this.notesArray.removeAt(i);
+    this.ensureAtLeastOne(this.notesArray);
+  }
+
+  addAllergy() { this.allergiesArray.push(this.fb.control('')); }
+  removeAllergy(i: number) {
+    this.allergiesArray.removeAt(i);
+    this.ensureAtLeastOne(this.allergiesArray);
+  }
+
+  addMedication() { this.medicationsArray.push(this.fb.control('')); }
+  removeMedication(i: number) {
+    this.medicationsArray.removeAt(i);
+    this.ensureAtLeastOne(this.medicationsArray);
+  }
+
+  addRestriction() { this.restrictionsArray.push(this.fb.control('')); }
+  removeRestriction(i: number) {
+    this.restrictionsArray.removeAt(i);
+    this.ensureAtLeastOne(this.restrictionsArray);
+  }
+
+  // ===== foto =====
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -96,8 +173,9 @@ export class PetEditComponent {
     input.value = '';
   }
 
+  // ===== salvar =====
   save() {
-    if (this.form.invalid || !this.pet?.id) {
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.snack.open('Confira os campos obrigatórios.', 'OK', { duration: 2500 });
       return;
@@ -105,15 +183,27 @@ export class PetEditComponent {
 
     const raw = this.form.getRawValue();
 
-    const updated = this.petsStore.update(this.pet.id, {
+    const cleanList = (arr: any[]) =>
+      (arr ?? []).map((x) => String(x ?? '').trim()).filter((x) => x.length > 0);
+
+    const updated = this.petsStore.update(this.petId, {
       photoUrl: raw.photoUrl || '',
       name: raw.name,
       breed: raw.breed,
       ageYears: Number(raw.ageYears),
-      notes: raw.notes || '',
+      notes: cleanList(raw.notes),
+
       additionalInfo: {
-        ...(this.pet.additionalInfo ?? {}),
+        ...(this.pet?.additionalInfo ?? {}),
         size: raw.size,
+      },
+
+      health: {
+        ...(this.pet?.health ?? {}),
+        vetName: raw.vetName || '',
+        allergies: cleanList(raw.allergies),
+        medications: cleanList(raw.medications),
+        restrictions: cleanList(raw.restrictions),
       },
     });
 
@@ -123,13 +213,13 @@ export class PetEditComponent {
     }
 
     this.snack.open('Alterações salvas!', 'OK', { duration: 2000 });
-    this.router.navigateByUrl(`/pets/${this.pet.id}`);
+    this.router.navigateByUrl(`/pets/${this.petId}`);
   }
 
   cancel() {
-    if (!this.pet?.id) return;
-    this.router.navigateByUrl(`/pets/${this.pet.id}`);
+    this.router.navigateByUrl(`/pets/${this.petId}`);
   }
 
+  // getters úteis
   get name() { return this.form.controls.name; }
 }

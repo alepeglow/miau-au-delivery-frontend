@@ -2,42 +2,23 @@ export type Species = 'CAO' | 'GATO' | 'OUTRO';
 export type Sex = 'M' | 'F';
 
 export interface PetHealth {
-  allergies?: string;
-  medications?: string;
-  restrictions?: string;
+  allergies?: string[];      // ✅ lista
+  medications?: string[];    // ✅ lista
+  restrictions?: string[];   // ✅ lista
   vetName?: string;
 }
 
-export interface Pet {
-  id: string;
-  photoUrl?: string;
-
-  name: string;
-  species: Species;
-  breed?: string;
-
-  ageYears?: number | null;
-  weightKg?: number | null;
-  sex: Sex;
-
-  lastVaccineDate?: string | null; // ISO string (facilita API depois)
-  notes?: string;
-
-  health?: PetHealth;
-
-  createdAt: string; // ISO
-  updatedAt: string; // ISO
-}
 export interface PetAdditionalInfo {
   neutered?: boolean;      // castrado
   coat?: string;           // pelagem
   temperament?: string;    // temperamento
-  size?: string;           // porte
+  size?: string;           // porte (Pequeno | Médio | Grande)
   ownerName?: string;      // tutor responsável
 }
 
 export interface Pet {
   id: string;
+
   photoUrl?: string;
 
   name: string;
@@ -48,13 +29,15 @@ export interface Pet {
   weightKg?: number | null;
   sex: Sex;
 
-  lastVaccineDate?: string | null;
-  notes?: string;
+  lastVaccineDate?: string | null; // ISO string
+
+  // ✅ observações gerais (várias)
+  notes?: string[];
 
   health?: PetHealth;
 
-  additionalInfo?: PetAdditionalInfo;  // 👈 adiciona isso
+  additionalInfo?: PetAdditionalInfo;
 
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO
+  updatedAt: string; // ISO
 }

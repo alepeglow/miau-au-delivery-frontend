@@ -76,6 +76,12 @@
               <mat-icon>attach_file</mat-icon> Anexar Comprovante
             </button>
           </div>
+
+          <!-- ✅ NOVO: label quando existe comprovante -->
+          <div class="proof" *ngIf="v.proofUrl">
+            <mat-icon>check_circle</mat-icon>
+            Comprovante anexado
+          </div>
         </mat-card>
       </div>
 

@@ -10,7 +10,7 @@ export const routes: Routes = [
   {
   path: 'pets/:id/editar',
   loadComponent: () =>
-    import('./features/pets/').then(m => m.PetEditComponent),
+    import('./features/pets/pages/pet-edit/pet-edit').then(m => m.PetEditComponent),
 },
   { path: 'pets/:id', component: PetProfileComponent },
   { path: 'pets/:id/carteirinha',

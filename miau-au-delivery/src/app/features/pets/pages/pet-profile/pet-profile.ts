@@ -83,9 +83,10 @@ export class PetProfileComponent implements OnDestroy {
   }
 
   edit() {
-    if (!this.pet?.id) return;
-    this.router.navigateByUrl(`/pets/${this.pet.id}/editar`);
-  }
+  const id = this.route.snapshot.paramMap.get('id');
+  if (!id) return;
+  this.router.navigateByUrl(`/pets/${id}/editar`);
+}
 
  goVaccines() {
   if (!this.pet?.id) return;

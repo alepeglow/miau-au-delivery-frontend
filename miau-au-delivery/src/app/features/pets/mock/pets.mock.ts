@@ -10,13 +10,18 @@ export const PETS_MOCK: Pet[] = [
     weightKg: 32,
     sex: 'M',
     lastVaccineDate: new Date().toISOString(),
-    notes: 'Dócil e brincalhão.',
+
+    // ✅ agora é lista
+    notes: ['Dócil e brincalhão.'],
+
+    // ✅ agora são listas
     health: {
-      allergies: 'Alergia a ração com frango',
-      medications: 'Medicação diária para artrite',
-      restrictions: '',
+      allergies: ['Alergia a ração com frango'],
+      medications: ['Medicação diária para artrite'],
+      restrictions: [],
       vetName: 'Clínica Miau & Au',
     },
+
     additionalInfo: {
       neutered: true,
       coat: 'Longa e dourada',
@@ -24,8 +29,11 @@ export const PETS_MOCK: Pet[] = [
       size: 'Grande',
       ownerName: 'Ana Paula Santos',
     },
-    photoUrl: 'assets/thor.png', // depois a gente mocka com uma imagem local/asset
-    createdAt: '2024-01-15T00:00:00.000Z',
+
+    // ✅ caminho consistente (ajuste se você usa outra pasta)
+    photoUrl: 'assets/thor.png',
+
+    createdAt: '2026-02-18T00:00:00.000Z',
     updatedAt: new Date().toISOString(),
   },
 
@@ -38,13 +46,18 @@ export const PETS_MOCK: Pet[] = [
     weightKg: 8.5,
     sex: 'M',
     lastVaccineDate: new Date().toISOString(),
-    notes: 'Muito brincalhão.',
+
+    // ✅ agora é lista
+    notes: ['Muito brincalhão.'],
+
+    // ✅ agora são listas
     health: {
-      allergies: 'Frango',
-      medications: 'Antiparasitário',
-      restrictions: 'Evitar correr muito',
+      allergies: ['Frango'],
+      medications: ['Antiparasitário'],
+      restrictions: ['Evitar correr muito'],
       vetName: 'Dr. João Silva',
     },
+
     additionalInfo: {
       neutered: false,
       coat: 'Curta',
@@ -52,8 +65,10 @@ export const PETS_MOCK: Pet[] = [
       size: 'Pequeno',
       ownerName: 'Carmem',
     },
+
     photoUrl: 'assets/bolinha.png',
-    createdAt: new Date().toISOString(),
+
+    createdAt: '2026-02-18T00:00:00.000Z',
     updatedAt: new Date().toISOString(),
   },
 ];
