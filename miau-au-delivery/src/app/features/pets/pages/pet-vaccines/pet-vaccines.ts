@@ -6,7 +6,7 @@ import { VaccineProofDialogComponent, VaccineProofDialogResult } from '../../dia
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
+import { VaccineDoseDialogComponent, VaccineDoseDialogResult } from '../../dialogs/vaccine-dose-dialog/vaccine-dose-dialog';
 import { PetsStore } from '../../services/pets.store';
 import { VaccinesStore } from '../../services/vaccines.store';
 import { Pet } from '../../models/pet.model';
@@ -112,17 +112,29 @@ export class PetVaccinesComponent implements OnDestroy {
   }
 
   addDose(v: VaccineRecord) {
-    // exemplo: registra uma "dose" atualizando datas
-    const now = new Date();
-    const next = new Date(now);
-    next.setFullYear(next.getFullYear() + 1);
+  const ref = this.dialog.open(VaccineDoseDialogComponent, {
+    width: '720px',
+    maxWidth: '92vw',
+    autoFocus: false,
+    restoreFocus: false,
+    panelClass: 'miau-dialog',
+    data: {
+      vaccineName: v.name,
+      appliedAt: v.appliedAt,
+      nextDoseAt: v.nextDoseAt,
+    },
+  });
+
+  ref.afterClosed().subscribe((res: VaccineDoseDialogResult | undefined) => {
+    if (!res) return;
 
     this.vaccinesStore.update(v.id, {
-      appliedAt: now.toISOString(),
-      nextDoseAt: next.toISOString(),
-      status: 'EM_DIA',
+      appliedAt: res.appliedAt,
+      nextDoseAt: res.nextDoseAt,
+      status: res.status,
     });
-  }
+  });
+}
 
   attachProof(v: VaccineRecord) {
   const ref = this.dialog.open(VaccineProofDialogComponent, {
