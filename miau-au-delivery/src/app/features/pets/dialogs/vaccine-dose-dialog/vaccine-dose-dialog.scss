@@ -1,0 +1,85 @@
+.dialog {
+  width: 100%;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog__header {
+  padding: 18px 18px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog__title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dialog__title .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgba(124, 92, 255, 0.12);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+}
+
+.close mat-icon { color: var(--muted); }
+
+.dialog__body {
+  padding: 8px 18px 0;
+  overflow: auto;
+  display: grid;
+  gap: 12px;
+}
+
+.hint { color: var(--muted); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tip {
+  font-size: 12px;
+  color: var(--muted);
+  background: rgba(246, 243, 255, 0.55);
+  border: 1px solid rgba(124, 92, 255, 0.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.dialog__actions {
+  padding: 14px 18px 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(31, 36, 48, 0.08);
+  background: rgba(246, 243, 255, 0.35);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, rgba(124,92,255,1), rgba(124,92,255,.70)) !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+}
+
+.btn-outline {
+  border-radius: 14px !important;
+  border-color: rgba(124, 92, 255, 0.35) !important;
+  color: var(--primary) !important;
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+  .dialog__actions { justify-content: stretch; }
+  .dialog__actions button { flex: 1; }
+}

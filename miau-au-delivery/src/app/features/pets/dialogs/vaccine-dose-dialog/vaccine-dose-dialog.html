@@ -1,1 +1,49 @@
-<p>vaccine-dose-dialog works!</p>
+<div class="dialog">
+  <div class="dialog__header">
+    <div class="dialog__title title-font">
+      <span class="icon"><mat-icon>event</mat-icon></span>
+      Adicionar Dose
+    </div>
+
+    <button mat-icon-button type="button" class="close" (click)="cancel()" aria-label="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog__body" [formGroup]="form">
+    <div class="hint">
+      Vacina: <b>{{ data.vaccineName }}</b>
+    </div>
+
+    <div class="grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Data aplicada*</mat-label>
+        <input matInput [matDatepicker]="applied" formControlName="appliedAt" />
+        <mat-datepicker-toggle matIconSuffix [for]="applied"></mat-datepicker-toggle>
+        <mat-datepicker #applied></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Próxima dose</mat-label>
+        <input matInput [matDatepicker]="next" formControlName="nextDoseAt" />
+        <mat-datepicker-toggle matIconSuffix [for]="next"></mat-datepicker-toggle>
+        <mat-datepicker #next></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="tip">
+      O status será calculado automaticamente com base na próxima dose.
+    </div>
+  </div>
+
+  <div class="dialog__actions">
+    <button mat-stroked-button class="btn-outline" type="button" (click)="cancel()">
+      Cancelar
+    </button>
+
+    <button mat-raised-button class="btn-primary" type="button" (click)="save()">
+      <mat-icon>check</mat-icon>
+      Salvar
+    </button>
+  </div>
+</div>
