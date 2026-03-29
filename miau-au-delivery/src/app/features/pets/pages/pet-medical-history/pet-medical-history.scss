@@ -111,9 +111,25 @@ h1 { margin: 0; font-size: 24px; color: var(--text); }
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
+}
+
+/* ✅ variações */
+.chip.ok {
   background: rgba(126, 228, 195, 0.22);
   border: 1px solid rgba(126, 228, 195, 0.55);
   color: #1f6a55;
+}
+
+.chip.warn {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: var(--warning);
+}
+
+.chip.danger {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--danger);
 }
 
 .body {

@@ -33,6 +33,12 @@ export const routes: Routes = [
     import('./features/pets/pages/pet-medical-history/pet-medical-history')
       .then(m => m.PetMedicalHistoryComponent),
 },
+{
+  path: 'pets/:id/historico-servicos',
+  loadComponent: () =>
+    import('./features/pets/pages/pet-service-history/pet-service-history')
+      .then(m => m.PetServiceHistoryComponent),
+},
 
   // opcional: fallback pra rotas inválidas
   { path: '**', redirectTo: 'pets/novo' },

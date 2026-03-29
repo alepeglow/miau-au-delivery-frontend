@@ -71,4 +71,32 @@ export const PETS_MOCK: Pet[] = [
     createdAt: '2026-02-18T00:00:00.000Z',
     updatedAt: new Date().toISOString(),
   },
+
+  {
+  id: 'pet_003',
+  name: 'Mel',
+  species: 'GATO',
+  breed: 'Siamês',
+  ageYears: 2,
+  weightKg: 4.2,
+  sex: 'F',
+  lastVaccineDate: new Date().toISOString(),
+  notes: ['Carinhosa e curiosa.'],
+  health: {
+    allergies: [],
+    medications: [],
+    restrictions: [],
+    vetName: 'Clínica Miau & Au',
+  },
+  additionalInfo: {
+    neutered: true,
+    coat: 'Creme com pontos escuros',
+    temperament: 'Carinhosa e curiosa',
+    size: 'Pequeno',
+    ownerName: 'Carmem',
+  },
+  photoUrl: 'assets/mel.png', // <-- CONFERE o nome do arquivo na pasta assets
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+},
 ];
