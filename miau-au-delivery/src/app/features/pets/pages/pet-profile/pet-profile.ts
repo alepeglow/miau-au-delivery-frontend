@@ -92,7 +92,11 @@ export class PetProfileComponent implements OnDestroy {
   if (!this.pet?.id) return;
   this.router.navigateByUrl(`/pets/${this.pet.id}/carteirinha`);
 }
-  goMedicalHistory() { /* futuro */ }
+  goMedicalHistory() {
+  const id = this.route.snapshot.paramMap.get('id');
+  if (!id) return;
+  this.router.navigateByUrl(`/pets/${id}/historico-medico`);
+}
   goServiceHistory() { /* futuro */ }
 
   private formatBr(d: Date) {

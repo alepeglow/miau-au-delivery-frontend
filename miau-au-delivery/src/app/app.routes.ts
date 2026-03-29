@@ -27,6 +27,12 @@ export const routes: Routes = [
         (m) => m.PetEditComponent
       ),
   },
+  {
+  path: 'pets/:id/historico-medico',
+  loadComponent: () =>
+    import('./features/pets/pages/pet-medical-history/pet-medical-history')
+      .then(m => m.PetMedicalHistoryComponent),
+},
 
   // opcional: fallback pra rotas inválidas
   { path: '**', redirectTo: 'pets/novo' },

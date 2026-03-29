@@ -1,0 +1,157 @@
+<section class="page-wrap" *ngIf="pet as p">
+  <div class="container">
+
+    <!-- Topo -->
+    <div class="topbar">
+      <div class="topbar__left">
+        <div class="brand">
+          <div class="brand__logo">🐾</div>
+          <div>
+            <div class="brand__name title-font">Miau & Au Delivery</div>
+            <div class="brand__sub">Histórico Médico</div>
+          </div>
+        </div>
+      </div>
+
+      <button mat-raised-button class="btn-success" type="button" (click)="newConsultation()">
+        <mat-icon>add</mat-icon>
+        Nova Consulta
+      </button>
+    </div>
+
+    <div class="layout">
+
+      <!-- Coluna esquerda -->
+      <mat-card class="card-elevated side">
+        <div class="pet">
+          <div class="pet__avatar">
+            <img *ngIf="p.photoUrl" [src]="p.photoUrl" alt="Foto do pet">
+            <mat-icon *ngIf="!p.photoUrl">pets</mat-icon>
+          </div>
+
+          <div class="pet__name title-font">{{ p.name }}</div>
+          <div class="pet__sub">{{ p.breed || '-' }} • {{ p.ageYears ?? '-' }} anos</div>
+
+          <div class="status-pill">Saudável</div>
+
+          <div class="info">
+            <div class="row">
+              <div class="k">Peso</div>
+              <div class="v">{{ p.weightKg ?? '-' }} kg</div>
+            </div>
+            <div class="row">
+              <div class="k">Idade</div>
+              <div class="v">{{ p.ageYears ?? '-' }} anos</div>
+            </div>
+            <div class="row">
+              <div class="k">Última consulta</div>
+              <div class="v">{{ lastConsultLabel() }}</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="emg">
+            <div class="emg__title">Contato de Emergência</div>
+            <div class="emg__name">{{ records[0]?.professionalName || 'Dr(a). —' }}</div>
+            <div class="emg__phone">(11) 99999-9999</div>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Coluna direita -->
+      <div class="main">
+        <div class="main-head">
+          <div>
+            <h1 class="title-font">Histórico Médico do {{ p.name }}</h1>
+            <p class="subtitle">Acompanhe todas as consultas, exames e procedimentos</p>
+          </div>
+
+          <div class="filters">
+            <mat-form-field appearance="outline" class="type">
+              <mat-select [(value)]="typeFilter">
+                <mat-option *ngFor="let opt of typeOptions" [value]="opt.value">
+                  {{ opt.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button mat-stroked-button class="btn-outline" type="button" (click)="onFilterClick()">
+              <mat-icon>filter_alt</mat-icon>
+              Filtrar
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista -->
+        <div class="list">
+          <mat-card class="card-elevated item" *ngFor="let r of visibleRecords">
+            <div class="item__head">
+              <div class="icon soft">
+                <mat-icon>{{ typeIcon(r.type) }}</mat-icon>
+              </div>
+
+              <div class="t">
+                <div class="name title-font">{{ r.title }}</div>
+                <div class="meta">
+                  {{ formatPt(r.dateTime) }}
+                  <span *ngIf="r.professionalName"> • </span>
+                  <span class="pro" *ngIf="r.professionalName">
+                    {{ r.professionalName }} <span class="muted" *ngIf="r.professionalRole">- {{ r.professionalRole }}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="chip" [ngClass]="statusClass(r.status)">
+                {{ statusLabel(r.status) }}
+              </div>
+            </div>
+
+            <div class="body" *ngIf="r.notes">
+              <div class="label">Observações:</div>
+              <div class="text">{{ r.notes }}</div>
+            </div>
+
+            <div class="mini" *ngIf="r.meta?.length">
+              <div class="mini__item" *ngFor="let m of r.meta">{{ m }}</div>
+            </div>
+
+            <div class="items" *ngIf="r.items?.length">
+              <div class="label">Vacinas aplicadas:</div>
+              <div class="items__grid">
+                <div class="items__row" *ngFor="let it of r.items">
+                  <span>{{ it }}</span>
+                  <span class="ok">✓ Aplicada</span>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+
+          <!-- Estado vazio -->
+          <mat-card class="card-elevated empty" *ngIf="visibleRecords.length === 0">
+            <mat-icon>event_busy</mat-icon>
+            <div class="empty__title">Sem registros</div>
+            <div class="empty__subtitle">Nenhum registro médico encontrado para este pet.</div>
+          </mat-card>
+        </div>
+
+        <!-- Carregar mais -->
+        <button
+          mat-raised-button
+          class="btn-load"
+          type="button"
+          (click)="loadMore()"
+          *ngIf="filtered.length > visibleCount"
+        >
+          Carregar Mais Registros
+        </button>
+
+        <button mat-stroked-button class="btn-outline backbtn" type="button" (click)="backToProfile()">
+          <mat-icon>arrow_back</mat-icon>
+          Voltar ao Perfil
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
