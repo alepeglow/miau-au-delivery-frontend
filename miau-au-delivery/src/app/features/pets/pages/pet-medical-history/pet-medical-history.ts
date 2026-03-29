@@ -154,12 +154,12 @@ export class PetMedicalHistoryComponent implements OnDestroy {
   }
 
   statusClass(s: MedicalRecord['status']) {
-    if (s === 'CONCLUIDA') return 'ok';
-    if (s === 'RESULTADOS_OK') return 'ok';
-    if (s === 'APLICADO') return 'ok';
-    if (s === 'NORMAL') return 'ok';
+  // tudo “positivo”
+  if (s === 'CONCLUIDA' || s === 'RESULTADOS_OK' || s === 'APLICADO' || s === 'NORMAL' || s === 'RECUPERADO') {
     return 'ok';
   }
+  return 'ok';
+}
 
   formatPt(dtIso: string) {
     const d = new Date(dtIso);
